@@ -4,9 +4,9 @@
 #include <sys/time.h>
 #include "btree.h"
 #include "hashtab.h"
-#define COUNTWORDS 100
+#define COUNTWORDS 10
 Listnode *hashtab[HASHTAB_SIZE];
-// 
+//
 // Бинарное дерево:
 // Разобраться с кодом, добавить коментарии в фукции удаления, отсально, вроде, всё понятно
 // Переделать вывод дерева*
@@ -91,15 +91,19 @@ int main()
 
     // Можно загрузить слова из файла в массив words[] или связный список
 
-    char *words[COUNTWORDS];
+    char **words = (char **)malloc(sizeof(char *));
     FILE *f;
-    f = fopen("test1.txt", "r");
+    f = fopen("test2.txt", "r");
     if (f == NULL)
         printf("ERROR");
-    for (int i = 0; !feof(f); i++)
+
+    int n = 0;
+    while (!feof(f))
     {
-        words[i] = (char *)malloc(sizeof(char) * 30);
-        fscanf(f, "%s", words[i]);
+        words[n] = (char *)malloc(sizeof(char) * 256);
+        fgets(words[n], 256, f);
+        n++;
+        words = (char **)realloc(words, sizeof(char *) * (n + 1));
     }
     fclose(f);
     Bstree *tree = bstree_create(words[0], 0); // Создаём корень дерева
@@ -109,7 +113,8 @@ int main()
     double t;
     char *w;
     Bstree *nodeB;
-    for (int i = 2; i < COUNTWORDS; i++)
+    printf("%d\n", n);
+    for (int i = 2; i < n + 1; i++)
     {
         bstree_add(tree, words[i - 1], i - 1);
         hashtab_add(hashtab, words[i - 1], i - 1);
@@ -120,19 +125,19 @@ int main()
             t = wtime();
             nodeB = bstree_lookup(tree, w);
             t = wtime() - t;
-            printf("Bstree: n = %d; time = %.6lf", i - 1, t);
+            printf("Bstree: n = %d; time = %.6lf", i, t);
 
             t = wtime();
             nodeH = hashtab_lookup(hashtab, w);
             t = wtime() - t;
-            printf("                                        Hashtab: n = %d; time = %.6lf\n", i - 1, t);
+            printf("                                        Hashtab: n = %d; time = %.6lf\n", i, t);
         }
     }
 
-    for (int i = 0; i < COUNTWORDS; i++)
+    for (int i = 0; i < n; i++)
     {
         free(words[i]);
     }
-
+    free(words);
     return 0;
 }

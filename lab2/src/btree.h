@@ -1,5 +1,5 @@
 #pragma once
-#define MAXWORDLENGTH 30
+#define MAXWORDLENGTH 100
 typedef struct Bstree
 {
     int value;

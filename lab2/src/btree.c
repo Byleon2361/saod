@@ -7,7 +7,7 @@ Bstree *bstree_create(char *key, int value)
     Bstree *node = malloc(sizeof(*node));
     if (node != NULL)
     {
-        if(strlen(key) < MAXWORDLENGTH)
+        if (strlen(key) < MAXWORDLENGTH)
             strcpy(node->key, key);
         else
             return NULL;
@@ -36,7 +36,7 @@ void bstree_add(Bstree *tree, char *key, int value)
 
     node = bstree_create(key, value); // Создание нода
     node->parent = parent;
-    if (strcmp(key, parent->key) < 0)//Присваивание потомка правому или левому узлу родителя
+    if (strcmp(key, parent->key) < 0) // Присваивание потомка правому или левому узлу родителя
         parent->left = node;
     else
         parent->right = node;
@@ -52,7 +52,7 @@ Bstree *bstree_lookup(Bstree *tree, char *key) // Ищет узел по клю�
         else
             tree = tree->right;
     }
-    return tree; 
+    return tree;
 }
 
 // Может быть 4 случая:

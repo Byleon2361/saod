@@ -89,11 +89,10 @@ int main()
         printf("Node not found\n");
     */
 
-    // Можно загрузить слова из файла в массив words[] или связный список
-
+    /*Задание 1
     char **words = (char **)malloc(sizeof(char *));
     FILE *f;
-    f = fopen("test2.txt", "r");
+    f = fopen("ordered.txt", "r");
     if (f == NULL)
         printf("ERROR");
 
@@ -133,11 +132,31 @@ int main()
             printf("                                        Hashtab: n = %d; time = %.6lf\n", i, t);
         }
     }
+    */
 
+    /*Задание 2
+    for (int i = 2; i < n + 1; i++)
+    {
+        bstree_add(tree, words[i - 1], i - 1);
+
+        if (i % 10000 == 0)
+        {
+            w = words[getRand(0, i - 1)];
+            t = wtime();
+            nodeH = bstree_max(tree);
+            t = wtime() - t;
+            printf("Bstree max: n = %d; time = %.6lf\n", i, t);
+        }
+    }
+    */
+
+    /*Освобождение памяти для задания 1 и 2
     for (int i = 0; i < n; i++)
     {
         free(words[i]);
     }
     free(words);
+    */
+
     return 0;
 }

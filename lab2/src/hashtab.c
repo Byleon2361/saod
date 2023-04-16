@@ -2,17 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hashtab.h"
-#define HASH_SIZE 16
 
-unsigned int KRHash(char *s)
-{
-    unsigned int h = 0, hash_mul = 31;
-
-    while (*s)
-        h = h * hash_mul + (unsigned int)*s++;
-
-    return h % HASH_SIZE;
-}
 unsigned int JenkinsHash(char *s)
 {
     unsigned int h = 0;
@@ -27,9 +17,9 @@ unsigned int JenkinsHash(char *s)
     h ^= (h >> 11);
     h += (h << 15);
 
-    return h % HASH_SIZE;
+    return h % HASHTAB_SIZE;
 }
-unsigned int hashtab_hash(char *key)
+unsigned int hashtab_hash(char *key) // KRHash
 {
     unsigned int h = 0, hash_mul = 31;
     while (*key)

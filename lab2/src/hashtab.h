@@ -1,6 +1,5 @@
 #pragma once
-#define HASHTAB_SIZE 5051
-
+#define HASHTAB_SIZE 50051
 typedef struct listnode {
     char *key;
     int value;

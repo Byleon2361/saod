@@ -5,7 +5,7 @@ typedef struct Bstree
     int value;
     char key[MAXWORDLENGTH];
     struct Bstree *parent;
-    struct Bstree *left; /* указатель на левую ветвь */
+    struct Bstree *left;
     struct Bstree *right;
 } Bstree;
 

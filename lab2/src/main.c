@@ -6,28 +6,7 @@
 #include "hashtab.h"
 #define COUNTWORDS 10
 Listnode *hashtab[HASHTAB_SIZE];
-//
-// Бинарное дерево:
-// Разобраться с кодом, добавить коментарии в фукции удаления, отсально, вроде, всё понятно
-// Переделать вывод дерева*
-// Добавить больше элементов и изменить старые
 
-// Хэщ-таблица:
-// Разобраться с кодом, добавить коментарии!
-// Добавить код, демонстрирующий работу программы
-// Добавить больше элементов и изменить старые
-
-// Задание 1
-//
-//
-
-// Задание 2
-//
-//
-
-// Задание 3
-//
-//
 double wtime()
 {
     struct timeval t;
@@ -49,9 +28,9 @@ int main()
     Bstree *min;
     bstree_add(tree, "good", 677);
     bstree_add(tree, "bye", 129);
-    bstree_add(tree, "amogus", 645);
+    bstree_add(tree, "car", 645);
     bstree_add(tree, "hi", 678);
-    bstree_add(tree, "beer", 999);
+    bstree_add(tree, "dog", 999);
 
     if (bstree_lookup(tree, "hi") != NULL)
         printf("%s: %d\n", bstree_lookup(tree, "hi")->key, bstree_lookup(tree, "hi")->value);
@@ -89,10 +68,9 @@ int main()
         printf("Node not found\n");
     */
 
-    /*Задание 1
     char **words = (char **)malloc(sizeof(char *));
     FILE *f;
-    f = fopen("ordered.txt", "r");
+    f = fopen("unordered.txt", "r");
     if (f == NULL)
         printf("ERROR");
 
@@ -105,58 +83,104 @@ int main()
         words = (char **)realloc(words, sizeof(char *) * (n + 1));
     }
     fclose(f);
-    Bstree *tree = bstree_create(words[0], 0); // Создаём корень дерева
+    Bstree *tree = bstree_create(words[0], 0);
     Listnode *nodeH;
 
     hashtab_init(hashtab);
     double t;
     char *w;
+    char *resWordArray[100];
     Bstree *nodeB;
-    printf("%d\n", n);
+
+    /*// Задание 1
     for (int i = 2; i < n + 1; i++)
     {
         bstree_add(tree, words[i - 1], i - 1);
         hashtab_add(hashtab, words[i - 1], i - 1);
         if (i % 10000 == 0)
         {
-            w = words[getRand(0, i - 1)];
+            for (size_t j = 0; j < 100; j++)
+            {
+                w = words[getRand(0, i - 1)];
+                resWordArray[j] = w;
+            }
 
             t = wtime();
-            nodeB = bstree_lookup(tree, w);
+            for (size_t j = 0; j < 100; j++)
+            {
+                nodeB = bstree_lookup(tree, resWordArray[j]);
+            }
             t = wtime() - t;
             printf("Bstree: n = %d; time = %.6lf", i, t);
 
             t = wtime();
-            nodeH = hashtab_lookup(hashtab, w);
+            for (size_t j = 0; j < 100; j++)
+            {
+                nodeH = hashtab_lookup(hashtab, resWordArray[j]);
+            }
             t = wtime() - t;
             printf("                                        Hashtab: n = %d; time = %.6lf\n", i, t);
         }
     }
     */
 
-    /*Задание 2
+    // Задание 2
     for (int i = 2; i < n + 1; i++)
     {
         bstree_add(tree, words[i - 1], i - 1);
 
         if (i % 10000 == 0)
         {
-            w = words[getRand(0, i - 1)];
             t = wtime();
             nodeH = bstree_max(tree);
             t = wtime() - t;
             printf("Bstree max: n = %d; time = %.6lf\n", i, t);
         }
     }
-    */
 
-    /*Освобождение памяти для задания 1 и 2
+    // Освобождение памяти для задания 1 и 2
     for (int i = 0; i < n; i++)
     {
         free(words[i]);
     }
     free(words);
-    */
 
+    /*Задание 3
+     int collision;
+     Listnode *temp;
+
+     for (int i = 2; i < n + 1; i++)
+     {
+         hashtab_add(hashtab, words[i - 1], i - 1);
+         if (i % 10000 == 0)
+         {
+             collision = 0;
+             temp = NULL;
+             // w = words[getRand(0, i - 1)];
+             t = wtime();
+             for (size_t j = 0; j < 100; j++)
+             {
+                 w = words[getRand(0, i - 1)];
+                 nodeH = hashtab_lookup(hashtab, w);
+             }
+             t = wtime() - t;
+             printf("Hashtab: n = %d; time = %.6lf", i, t);
+
+             // Все ломает
+             for (int j = 0; j < HASHTAB_SIZE; j++)
+             {
+                 if (hashtab[j] == NULL)
+                 {
+                     continue;
+                 }
+                 for (temp = hashtab[j]->next; temp != NULL; temp = temp->next)
+                 {
+                     collision++;
+                 }
+             }
+             printf("   Collision: %d\n", collision);
+         }
+     }
+     */
     return 0;
 }

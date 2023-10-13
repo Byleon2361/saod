@@ -16,7 +16,7 @@ typedef struct avltree
 Avltree *avltree_create(int key, char *value);
 Avltree *avltree_add(Avltree *tree, int key, char *value);
 Avltree *avltree_lookup(Avltree *tree, int key);
-void avltree_delete(Avltree *newTree, Avltree *tree);
+Avltree *avltree_delete(Avltree *newTree, Avltree *tree);
 Avltree *avltree_replace_node(Avltree *tree, int key);
 Avltree *avltree_min(Avltree *tree);
 Avltree *avltree_max(Avltree *tree);

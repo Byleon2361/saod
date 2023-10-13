@@ -22,56 +22,7 @@ Avltree *avltree_create(int key, char *value)
     }
     return node;
 }
-struct avltree *avltree_add(struct avltree *tree, int key, char *value)
-{
-    if (tree == NULL)
-    {
-        return avltree_create(key, value);
-    }
-    if (key < tree->key)
-    {
-        /* Insert into left subtree */
-        tree->left = avltree_add(tree->left, key, value);
-        if ((avltree_height(tree->left) - avltree_height(tree->right)) == 2)
-        {
-            /* Subtree is unbalanced */
-            if (key < tree->left->key)
-            {
-                /* Left left case */
-                tree = avltree_right_rotate(tree);
-            }
-            else
-            {
-                /* Left right case */
-                tree = avltree_leftright_rotate(tree);
-            }
-        }
-    }
-    else if (key > tree->key)
-    {
-        /* Insert into right subtree */
-        tree->right = avltree_add(tree->right, key, value);
-        if ((avltree_height(tree->right) - avltree_height(tree->left)) == 2)
-        {
-            /* Subtree is unbalanced */
-            if (key > tree->right->key)
-            {
-                /* Right right case */
-                tree = avltree_left_rotate(tree);
-            }
-            else
-            {
-                /* Right left case */
-                tree = avltree_rightleft_rotate(tree);
-            }
-        }
-    }
-    tree->height = imax2(avltree_height(tree->left),
-                         avltree_height(tree->right)) +
-                   1;
-    return tree;
-}
-/*
+
 Avltree *avltree_add(Avltree *tree, int key, char *value)
 {
     if (tree == NULL)
@@ -125,7 +76,7 @@ Avltree *avltree_balance(Avltree *tree, int key)
     }
     return tree;
 }
-*/
+
 Avltree *avltree_lookup(Avltree *tree, int key) // Ищет узел по ключу
 {
     while (tree != NULL)
@@ -152,7 +103,7 @@ void avltree_count_nodes(Avltree *tree, int *count)
     }
 }
 
-void avltree_delete(Avltree *newTree, Avltree *tree)
+Avltree *avltree_delete(Avltree *newTree, Avltree *tree)
 {
     if (tree->deleted == 0)
     {
@@ -160,12 +111,13 @@ void avltree_delete(Avltree *newTree, Avltree *tree)
     }
     if (tree->left != NULL)
     {
-        avltree_delete(newTree, tree->left);
+        newTree = avltree_delete(newTree, tree->left);
     }
     if (tree->right != NULL)
     {
-        avltree_delete(newTree, tree->right);
+        newTree = avltree_delete(newTree, tree->right);
     }
+    return newTree;
 }
 Avltree *avltree_replace_node(Avltree *tree, int key)
 {
@@ -181,7 +133,7 @@ Avltree *avltree_replace_node(Avltree *tree, int key)
     if (deletionCount == countNodes * LIMDELETION)
     {
         Avltree *newTree = avltree_create(tree->key, tree->value);
-        avltree_delete(newTree, tree);
+        newTree = avltree_delete(newTree, tree);
         avltree_free(tree);
         return newTree;
     }
@@ -241,12 +193,6 @@ int avltree_height(Avltree *tree)
 {
     return (tree != NULL) ? tree->height : -1;
 }
-/*
-int avltree_balance(Avltree *tree)
-{
-    return avltree_height(tree->left) - avltree_height(tree->right);
-}
-*/
 Avltree *avltree_right_rotate(Avltree *tree)
 {
     Avltree *left;

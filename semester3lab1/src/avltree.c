@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "avltree.h"
-#define LIMDELETION 2
+#define LIMDELETION 0.5 // 50% удаленных узлов
 int deletionCount = 0;
 Avltree *avltree_create(int key, char *value)
 {
@@ -17,10 +17,61 @@ Avltree *avltree_create(int key, char *value)
         node->parent = NULL;
         node->left = NULL;
         node->right = NULL;
+        node->height = 0;
         node->deleted = 0;
     }
     return node;
 }
+struct avltree *avltree_add(struct avltree *tree, int key, char *value)
+{
+    if (tree == NULL)
+    {
+        return avltree_create(key, value);
+    }
+    if (key < tree->key)
+    {
+        /* Insert into left subtree */
+        tree->left = avltree_add(tree->left, key, value);
+        if ((avltree_height(tree->left) - avltree_height(tree->right)) == 2)
+        {
+            /* Subtree is unbalanced */
+            if (key < tree->left->key)
+            {
+                /* Left left case */
+                tree = avltree_right_rotate(tree);
+            }
+            else
+            {
+                /* Left right case */
+                tree = avltree_leftright_rotate(tree);
+            }
+        }
+    }
+    else if (key > tree->key)
+    {
+        /* Insert into right subtree */
+        tree->right = avltree_add(tree->right, key, value);
+        if ((avltree_height(tree->right) - avltree_height(tree->left)) == 2)
+        {
+            /* Subtree is unbalanced */
+            if (key > tree->right->key)
+            {
+                /* Right right case */
+                tree = avltree_left_rotate(tree);
+            }
+            else
+            {
+                /* Right left case */
+                tree = avltree_rightleft_rotate(tree);
+            }
+        }
+    }
+    tree->height = imax2(avltree_height(tree->left),
+                         avltree_height(tree->right)) +
+                   1;
+    return tree;
+}
+/*
 Avltree *avltree_add(Avltree *tree, int key, char *value)
 {
     if (tree == NULL)
@@ -47,6 +98,7 @@ Avltree *avltree_add(Avltree *tree, int key, char *value)
     tree->height = imax2(avltree_height(tree->left), avltree_height(tree->right)) + 1;
     return tree;
 }
+
 Avltree *avltree_balance(Avltree *tree, int key)
 {
     if (avltree_height(tree->right) - avltree_height(tree->left) == 2)
@@ -73,6 +125,7 @@ Avltree *avltree_balance(Avltree *tree, int key)
     }
     return tree;
 }
+*/
 Avltree *avltree_lookup(Avltree *tree, int key) // Ищет узел по ключу
 {
     while (tree != NULL)
@@ -86,60 +139,35 @@ Avltree *avltree_lookup(Avltree *tree, int key) // Ищет узел по клю
     }
     return tree;
 }
+void avltree_count_nodes(Avltree *tree, int *count)
+{
+    (*count)++;
+    if (tree->right)
+    {
+        avltree_count_nodes(tree->right, count);
+    }
+    if (tree->left)
+    {
+        avltree_count_nodes(tree->left, count);
+    }
+}
 
-/*
-Avltree *avltree_delete_node(Avltree *tree, Avltree *delNode)
+void avltree_delete(Avltree *newTree, Avltree *tree)
 {
-    if (delNode->left == NULL)
+    if (tree->deleted == 0)
     {
-        avltree_replace_node(delNode->parent, delNode, delNode->right);
-        if (delNode->parent == NULL) // Если удаляемый элемент корень
-            tree = delNode->right;
+        newTree = avltree_add(newTree, tree->key, tree->value);
     }
-    else if (delNode->right == NULL)
+    if (tree->left != NULL)
     {
-        avltree_replace_node(delNode->parent, delNode, delNode->left);
-        if (delNode->parent == NULL) // Если удаляемый элемент корень
-            tree = delNode->left;
+        avltree_delete(newTree, tree->left);
     }
-    else
+    if (tree->right != NULL)
     {
-        Avltree *min = delNode->right;
-        Avltree *minParent = min;
-        while (min->left != NULL)
-        {
-            minParent = min;
-            min = min->left;
-        }
-        avltree_replace_node(delNode->parent, delNode, min);
-        if (delNode->parent == NULL)
-            tree = min;
-        if (delNode->right != NULL)
-        {
-            minParent->left = min->right;
-            min->left = delNode->left;
-            min->right = delNode->right;
-        }
-        else
-            min->left = delNode->left;
-    }
-    tree = avltree_balance(tree, delNode->key);
-    free(delNode);
-    return tree;
-}
-void avltree_replace_node(Avltree *parent, Avltree *node, Avltree *child)
-{
-    if (parent != NULL)
-    {
-        if (node->key < parent->key)
-            parent->left = child;
-        else
-            parent->right = child;
+        avltree_delete(newTree, tree->right);
     }
 }
-*/
-// Avltree *avltree_delete(Avltree *tree, int key)
-Avltree *avltree_delete(Avltree *tree, int key)
+Avltree *avltree_replace_node(Avltree *tree, int key)
 {
     Avltree *delNode;
     if ((delNode = avltree_lookup(tree, key)) == NULL)
@@ -147,20 +175,13 @@ Avltree *avltree_delete(Avltree *tree, int key)
 
     delNode->deleted = 1;
     deletionCount++;
-    Avltree *newTree = avltree_create(tree->key, tree->value);
-    if (deletionCount == LIMDELETION)
+
+    int countNodes = 0;
+    avltree_count_nodes(tree, &countNodes);
+    if (deletionCount == countNodes * LIMDELETION)
     {
-        while ((tree != NULL))
-        {
-            if (tree->deleted == 0)
-            {
-                avltree_add(newTree, tree->key, tree->value);
-            }
-            if (key < tree->key)
-                tree = tree->left;
-            else
-                tree = tree->right;
-        }
+        Avltree *newTree = avltree_create(tree->key, tree->value);
+        avltree_delete(newTree, tree);
         avltree_free(tree);
         return newTree;
     }

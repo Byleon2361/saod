@@ -38,8 +38,9 @@ int main()
     printf("MAX: %d: %s\n", max->key, max->value);
     printf("MIN: %d: %s\n", min->key, min->value);
 
-    tree = avltree_delete(tree, 6);
-    tree = avltree_delete(tree, 3);
+    tree = avltree_replace_node(tree, 6);
+    tree = avltree_replace_node(tree, 5);
+    tree = avltree_replace_node(tree, 3);
     avltree_print(tree, 10);
     avltree_free(tree);
 

@@ -13,17 +13,15 @@ typedef struct avltree
     int deleted;
 } Avltree;
 
-Avltree *avltree_create(int key, char *value);                             //+
-Avltree *avltree_add(Avltree *tree, int key, char *value);                 //+
-Avltree *avltree_lookup(Avltree *tree, int key);                           //+
-Avltree *avltree_delete_node(Avltree *tree, Avltree *delNode);             //
-Avltree *avltree_delete(Avltree *tree, int key);                           //
-void avltree_replace_node(Avltree *parent, Avltree *node, Avltree *child); //
-Avltree *avltree_min(Avltree *tree);                                       //+
-Avltree *avltree_max(Avltree *tree);                                       //+
-void avltree_print(Avltree *tree, int n);                                  //+
+Avltree *avltree_create(int key, char *value);
+Avltree *avltree_add(Avltree *tree, int key, char *value);
+Avltree *avltree_lookup(Avltree *tree, int key);
+void avltree_delete(Avltree *newTree, Avltree *tree);
+Avltree *avltree_replace_node(Avltree *tree, int key);
+Avltree *avltree_min(Avltree *tree);
+Avltree *avltree_max(Avltree *tree);
+void avltree_print(Avltree *tree, int n);
 
-//+
 void avltree_free(Avltree *tree);
 int avltree_height(Avltree *tree);
 Avltree *avltree_right_rotate(Avltree *tree);

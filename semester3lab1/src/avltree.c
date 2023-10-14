@@ -132,16 +132,13 @@ Avltree *avltree_replace_node(Avltree *tree, int key)
     avltree_count_nodes(tree, &countNodes);
     if (deletionCount == countNodes * LIMDELETION)
     {
-        Avltree *newTree = avltree_create(tree->key, tree->value);
+        Avltree *newTree = NULL;
         newTree = avltree_delete(newTree, tree);
         avltree_free(tree);
         return newTree;
     }
     return tree;
 }
-
-// Самый минимльный элемент находится
-// в нижним левом углу
 Avltree *avltree_min(Avltree *tree)
 {
     if (tree == NULL)

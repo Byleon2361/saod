@@ -17,83 +17,53 @@ int getRand(int min, int max)
 int main()
 {
     srand(time(NULL));
+    /*Демонстрация основных функций
+        Avltree *tree = avltree_create(1, "one");
+        Avltree *max;
+        Avltree *min;
+        tree = avltree_add(tree, 2, "two");
+        tree = avltree_add(tree, 3, "three");
+        tree = avltree_add(tree, 4, "four");
+        tree = avltree_add(tree, 5, "five");
+        tree = avltree_add(tree, 6, "six");
 
-    Avltree *tree = avltree_create(1, "one");
-    Avltree *max;
-    Avltree *min;
-    tree = avltree_add(tree, 2, "two");
-    tree = avltree_add(tree, 3, "three");
-    tree = avltree_add(tree, 4, "four");
-    tree = avltree_add(tree, 5, "five");
-    tree = avltree_add(tree, 6, "six");
+        if (avltree_lookup(tree, 3) != NULL)
+            printf("%d: %s\n", avltree_lookup(tree, 3)->key, avltree_lookup(tree, 3)->value);
+        else
+            printf("Node not found\n");
 
-    if (avltree_lookup(tree, 3) != NULL)
-        printf("%d: %s\n", avltree_lookup(tree, 3)->key, avltree_lookup(tree, 3)->value);
-    else
-        printf("Node not found\n");
+        max = avltree_min(tree);
+        min = avltree_max(tree);
+        avltree_print(tree, 10);
+        printf("MAX: %d: %s\n", max->key, max->value);
+        printf("MIN: %d: %s\n", min->key, min->value);
 
-    max = avltree_min(tree);
-    min = avltree_max(tree);
-    avltree_print(tree, 10);
-    printf("MAX: %d: %s\n", max->key, max->value);
-    printf("MIN: %d: %s\n", min->key, min->value);
+        tree = avltree_replace_node(tree, 6);
+        tree = avltree_replace_node(tree, 5);
+        tree = avltree_replace_node(tree, 3);
+        avltree_print(tree, 10);
+        avltree_free(tree);
+    */
 
-    tree = avltree_replace_node(tree, 6);
-    tree = avltree_replace_node(tree, 5);
-    tree = avltree_replace_node(tree, 3);
-    avltree_print(tree, 10);
-    avltree_free(tree);
-
-    /*
-    char **words = (char **)malloc(sizeof(char *));
-    FILE *f;
-    f = fopen("ordered.txt", "r");
-    if (f == NULL)
-        printf("ERROR");
-
-    int n = 0;
-    while (!feof(f))
-    {
-        words[n] = (char *)malloc(sizeof(char) * 256);
-        fgets(words[n], 256, f);
-        n++;
-        words = (char **)realloc(words, sizeof(char *) * (n + 1));
-    }
-    fclose(f);
-
-    Avltree *tree = avltree_create(words[0], 0);
-
+       Avltree *tree = NULL;
     double t;
-    char *w;
-    char *resWordArray[100];
-    Avltree *nodeB;
+    Avltree *node = NULL;
 
-    // Задание 1
-    for (int i = 2; i < n + 1; i++)
+    for (int i = 1; i < 200001; i++)
     {
-        avltree_add(tree, words[i - 1], i - 1);
+        tree = avltree_add(tree, i, "asd");
         if (i % 10000 == 0)
         {
-            for (size_t j = 0; j < 100; j++)
-            {
-                w = words[getRand(0, i - 1)];
-                resWordArray[j] = w;
-            }
-
             t = wtime();
-            for (size_t j = 0; j < 100; j++)
+            for (int j = 0; j < 100; j++)
             {
-                nodeB = avltree_lookup(tree, resWordArray[j]);
+                int key = rand() % i;
+                node = avltree_lookup(tree, key);
             }
             t = wtime() - t;
-            printf("Avltree: n = %d; time = %.6lf", i, t);
+            printf("Avltree: n = %d; time = %.6lf\n", i, t);
         }
     }
-    for (int i = 0; i < n; i++)
-    {
-        free(words[i]);
-    }
-    free(words);
-    */
+    avltree_free(tree);
     return 0;
 }
